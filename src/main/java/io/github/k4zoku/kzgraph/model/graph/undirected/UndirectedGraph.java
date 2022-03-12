@@ -6,17 +6,11 @@ import io.github.k4zoku.kzgraph.model.graph.simple.SimpleGraph;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
 
 public class UndirectedGraph extends SimpleGraph {
 
-    public UndirectedGraph(Map<Vertex, Map<Vertex, Set<Edge>>> adjacencyMatrix) {
-        super(adjacencyMatrix);
-    }
-
     public UndirectedGraph() {
-        super(new LinkedHashMap<>());
+        super();
     }
 
     @Override

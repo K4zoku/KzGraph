@@ -5,7 +5,7 @@ import io.github.k4zoku.kzgraph.model.graph.Edge;
 import io.github.k4zoku.kzgraph.model.graph.Graph;
 import io.github.k4zoku.kzgraph.model.graph.GraphSerializationMode;
 import io.github.k4zoku.kzgraph.model.graph.Vertex;
-import io.github.k4zoku.kzgraph.model.serialization.HumanSerializable;
+import io.github.k4zoku.kzgraph.model.serialization.HumanReadableSerializer;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -15,7 +15,7 @@ import java.text.ParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public abstract class SimpleGraph implements Graph, HumanSerializable {
+public abstract class SimpleGraph implements Graph, HumanReadableSerializer {
 
     protected final Map<Vertex, Map<Vertex, Set<Edge>>> adjacencyMatrix;
 
@@ -40,21 +40,6 @@ public abstract class SimpleGraph implements Graph, HumanSerializable {
     public void addVertex(Vertex vertex) {
         this.adjacencyMatrix.putIfAbsent(vertex, new LinkedHashMap<>());
     }
-
-    @Override
-    public abstract void addEdge(Edge edge);
-
-    @Override
-    public abstract void addEdge(Vertex source, Vertex destination);
-
-    @Override
-    public abstract void addEdge(Vertex source, Vertex destination, double weight);
-
-    @Override
-    public abstract void removeVertex(Vertex vertex);
-
-    @Override
-    public abstract void removeEdge(Edge edge);
 
     @Override
     public Set<Vertex> getVertices() {
@@ -119,31 +104,34 @@ public abstract class SimpleGraph implements Graph, HumanSerializable {
 
     protected void writeMatrix(Writer writer) throws IOException {
         StringBuilder sb = new StringBuilder();
-        for (Vertex source : this.adjacencyMatrix.keySet()) {
-            for (Vertex destination : this.adjacencyMatrix.get(source).keySet()) {
-                for (Edge edge : this.adjacencyMatrix.get(source).get(destination)) {
-                    sb.append(weightFormat.format(edge.getWeight())).append(" ");
-                }
+        Set<Vertex> vertices = this.getVertices();
+        for (Vertex source : vertices) {
+            for (Vertex destination : vertices) {
+                Set<Edge> edges = this.getEdges(source, destination);
+                sb.append(weightFormat.format(
+                                edges.stream()
+                                        .min(Comparator.comparing(Edge::getWeight))
+                                        .map(Edge::getWeight).orElse(0.0)
+                        )
+                ).append(" ");
             }
-            // remove last space
-            sb.deleteCharAt(sb.length() - 1);
-            sb.append("\n");
+
         }
         writer.write(sb.toString());
     }
 
     protected void writeList(Writer writer) throws IOException {
         StringBuilder sb = new StringBuilder();
-        for (Vertex source : this.adjacencyMatrix.keySet()) {
-            for (Vertex destination : this.adjacencyMatrix.get(source).keySet()) {
-                for (Edge edge : this.adjacencyMatrix.get(source).get(destination)) {
-                    sb.append(source.getLabel()).append(" ")
-                            .append(destination.getLabel()).append(" ")
-                            .append(weightFormat.format(edge.getWeight()))
-                            .append("\n");
-                }
-            }
-        }
+        this.adjacencyMatrix.forEach((source, map) ->
+                map.forEach((destination, edges) ->
+                        edges.forEach(edge ->
+                                sb.append(source.getLabel()).append(" ")
+                                        .append(destination.getLabel()).append(" ")
+                                        .append(weightFormat.format(edge.getWeight()))
+                                        .append("\n")
+                        )
+                )
+        );
         writer.write(sb.toString());
     }
 

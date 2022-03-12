@@ -5,10 +5,22 @@ import com.formdev.flatlaf.FlatIntelliJLaf;
 import io.github.k4zoku.kzgraph.view.KzGraphWindow;
 
 import javax.swing.*;
+import java.util.Arrays;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public final class KzGraph {
+public final class KzGraph implements Runnable {
+
     public static void main(String[] args) {
+        new KzGraph().run();
+    }
+
+    private Logger getLogger() {
+        return Logger.getLogger(KzGraph.class.getName());
+    }
+
+    @Override
+    public void run() {
         // Enable anti-aliasing
         System.setProperty("awt.useSystemAAFontSettings", "on");
         System.setProperty("swing.aatext", "true");
@@ -16,18 +28,18 @@ public final class KzGraph {
         boolean isDark = System.getenv().get("DARK_MODE") != null;
         boolean success = isDark ? FlatDarculaLaf.setup() : FlatIntelliJLaf.setup();
         if (!success) {
-            Logger.getLogger(KzGraph.class.getName()).warning("Failed to set the Flatlaf look and feel");
-            Logger.getLogger(KzGraph.class.getName()).warning("Fallback to the Nimbus look and feel");
-            for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    try {
-                        UIManager.setLookAndFeel(info.getClassName());
-                    } catch (Exception e) {
-                        Logger.getLogger(KzGraph.class.getName()).warning("Failed to set the look and feel");
-                    }
-                    break;
-                }
-            }
+            getLogger().warning("Failed to set the Flatlaf look and feel");
+            getLogger().warning("Fallback to the Nimbus look and feel");
+            Arrays.stream(UIManager.getInstalledLookAndFeels())
+                    .filter(laf -> laf.getName().contains("Nimbus"))
+                    .findFirst()
+                    .ifPresent(laf -> {
+                        try {
+                            UIManager.setLookAndFeel(laf.getClassName());
+                        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
+                            getLogger().log(Level.SEVERE, "Failed to set the Nimbus look and feel", e);
+                        }
+                    });
         }
         // Create the main window
         SwingUtilities.invokeLater(new KzGraphWindow("KzGraph"));

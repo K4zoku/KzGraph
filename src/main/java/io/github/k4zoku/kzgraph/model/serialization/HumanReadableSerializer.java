@@ -5,7 +5,7 @@ import java.io.Reader;
 import java.io.Writer;
 import java.text.ParseException;
 
-public interface HumanSerializable {
+public interface HumanReadableSerializer {
 
     void serialize(Writer writer) throws IOException;
 

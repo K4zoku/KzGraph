@@ -50,8 +50,8 @@ public class KzGraphMenuBar extends JMenuBar {
         redoItem = new JMenuItem("Redo");
         clearItem = new JMenuItem("Clear");
         deleteItem = new JMenuItem("Delete");
-        addVertexItem = new JMenuItem("Vertex");
-        addEdgeItem = new JMenuItem("Edge");
+        addVertexItem = new JMenuItem("Add Vertex");
+        addEdgeItem = new JMenuItem("Add Edge");
         algorithmMenu = new JMenu("Algorithm");
         traversalMenu = new JMenu("Traversal");
         bfsItem = new JMenuItem("BFS");
