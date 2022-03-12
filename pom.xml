@@ -15,7 +15,8 @@
     </properties>
 
     <build>
-        <finalName>${project.name}-${project.version}.jar</finalName>
+        <finalName>${project.name}-${project.version}</finalName>
+        <defaultGoal>clean package</defaultGoal>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -44,8 +45,7 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <createDependencyReducedPom>false</createDependencyReducedPom>
-                            <minimizeJar>true</minimizeJar>
+                            <finalName>${project.build.finalName}</finalName>
                             <filters>
                                 <filter>
                                     <artifact>*:*</artifact>
@@ -87,7 +87,6 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.22</version>
-            <scope>provided</scope>
         </dependency>
     </dependencies>
 
