@@ -5,6 +5,7 @@ import com.formdev.flatlaf.FlatIntelliJLaf;
 import io.github.k4zoku.kzgraph.view.KzGraphWindow;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,7 +28,11 @@ public final class KzGraph implements Runnable {
         // Set the look and feel
         boolean isDark = System.getenv().get("DARK_MODE") != null;
         boolean success = isDark ? FlatDarculaLaf.setup() : FlatIntelliJLaf.setup();
-        if (!success) {
+        if (success) {
+            // Customize FlatLaf
+            UIManager.put("ScrollBar.thumbArc", 999);
+            UIManager.put("ScrollBar.thumbInsets", new Insets(2, 2, 2, 2));
+        } else {
             getLogger().warning("Failed to set the Flatlaf look and feel");
             getLogger().warning("Fallback to the Nimbus look and feel");
             Arrays.stream(UIManager.getInstalledLookAndFeels())
