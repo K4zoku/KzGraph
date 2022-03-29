@@ -21,7 +21,7 @@ public class KzGraphControlPanel extends JPanel {
                         "<b> Draws vertices: </b><br>" +
                         "<ul>" +
                         "<li> Hold ctrl and click on the <br> canvas to add a vertex </li>" +
-                        "<li> Hold shift and clock on the <br> vertex that you want to <br> remove </li>" +
+                        "<li> Hold shift and click on the <br> vertex that you want to <br> remove </li>" +
                         "<li> Drag the vertex to move it </li>" +
                         "</ul>" +
                         "<b> Draws edges: </b><br>" +
