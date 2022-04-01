@@ -26,6 +26,10 @@ public class KzGraphMenuBar extends JMenuBar {
     private final JMenuItem addVertexItem;
     private final JMenuItem addEdgeItem;
 
+    private final JMenu viewMenu;
+    private final JMenuItem themeItem;
+    private final ButtonGroup themeGroup;
+
     private final JMenu algorithmMenu;
     private final JMenu traversalMenu;
     private final JMenuItem bfsItem;
@@ -36,7 +40,10 @@ public class KzGraphMenuBar extends JMenuBar {
     private final JMenu shortestPathMenu;
     private final JMenuItem dijkstraItem;
 
-    public KzGraphMenuBar() {
+    private final JFrame parent;
+
+    public KzGraphMenuBar(JFrame parent) {
+        this.parent = parent;
         fileMenu = new JMenu("File");
         openItem = new JMenuItem("Open");
         saveItem = new JMenuItem("Save");
@@ -52,6 +59,9 @@ public class KzGraphMenuBar extends JMenuBar {
         deleteItem = new JMenuItem("Delete");
         addVertexItem = new JMenuItem("Add Vertex");
         addEdgeItem = new JMenuItem("Add Edge");
+        viewMenu = new JMenu("View");
+        themeItem = new JMenu("Theme");
+        themeGroup = new ButtonGroup();
         algorithmMenu = new JMenu("Algorithm");
         traversalMenu = new JMenu("Traversal");
         bfsItem = new JMenuItem("BFS");
@@ -154,6 +164,30 @@ public class KzGraphMenuBar extends JMenuBar {
 
     }
 
+    private void initViewMenu() {
+        viewMenu.setMnemonic('V');
+
+        themeItem.setMnemonic('T');
+        themeItem.setToolTipText("Change the theme");
+        viewMenu.add(themeItem);
+
+        for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+            JCheckBoxMenuItem item = new JCheckBoxMenuItem(info.getName());
+            item.setMnemonic(info.getName().charAt(0));
+            item.setSelected(info.getClassName().equals(UIManager.getLookAndFeel().getClass().getName()));
+            item.addActionListener(e -> {
+                try {
+                    UIManager.setLookAndFeel(info.getClassName());
+                    SwingUtilities.updateComponentTreeUI(parent);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            });
+            themeGroup.add(item);
+            themeItem.add(item);
+        }
+    }
+
     private void initAlgorithmMenu() {
         algorithmMenu.setMnemonic('A');
 
@@ -202,6 +236,8 @@ public class KzGraphMenuBar extends JMenuBar {
         add(fileMenu);
         initEditMenu();
         add(editMenu);
+        initViewMenu();
+        add(viewMenu);
         initAlgorithmMenu();
         add(algorithmMenu);
     }

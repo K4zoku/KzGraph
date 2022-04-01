@@ -1,7 +1,7 @@
 package io.github.k4zoku.kzgraph;
 
-import com.formdev.flatlaf.FlatDarculaLaf;
-import com.formdev.flatlaf.FlatIntelliJLaf;
+import com.formdev.flatlaf.FlatDarkLaf;
+import com.formdev.flatlaf.FlatLightLaf;
 import io.github.k4zoku.kzgraph.view.KzGraphWindow;
 
 import javax.swing.*;
@@ -26,8 +26,10 @@ public final class KzGraph implements Runnable {
         System.setProperty("awt.useSystemAAFontSettings", "on");
         System.setProperty("swing.aatext", "true");
         // Set the look and feel
+        FlatDarkLaf.installLafInfo();
+        FlatLightLaf.installLafInfo();
         boolean isDark = System.getenv().get("DARK_MODE") != null;
-        boolean success = isDark ? FlatDarculaLaf.setup() : FlatIntelliJLaf.setup();
+        boolean success = isDark ? FlatDarkLaf.setup() : FlatLightLaf.setup();
         if (success) {
             // Customize FlatLaf
             UIManager.put("ScrollBar.thumbArc", 999);

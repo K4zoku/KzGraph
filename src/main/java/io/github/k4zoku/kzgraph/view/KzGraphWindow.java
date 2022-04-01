@@ -22,7 +22,7 @@ public class KzGraphWindow extends JFrame implements Runnable {
 
     private void initComponents() {
         setIconImage(Toolkit.getDefaultToolkit().getImage(Icons.APP_ICON));
-        setJMenuBar(new KzGraphMenuBar());
+        setJMenuBar(new KzGraphMenuBar(this));
     }
 
     private void initLayout() {
